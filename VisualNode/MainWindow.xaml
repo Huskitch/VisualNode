@@ -2,6 +2,8 @@
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+                      xmlns:common="clr-namespace:VisualNode.Util"
                       Width="1000"
                       Height="800"
                       TitleCaps="False"
@@ -12,15 +14,7 @@
             <Binding Source="VisualNode" />
         </PriorityBinding>
     </Window.Title>
-    
-    <Window.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/VS/Colors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/VS/Styles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Window.Resources>
+
     <DockPanel>
         <Menu Margin="2,0,0,0"
               DockPanel.Dock="Top"
@@ -28,16 +22,15 @@
             <MenuItem Header="File">
                 <MenuItem Header="New" Click="NewProject"/>
                 <MenuItem Header="Open" Click="OpenProject"/>
-                <MenuItem Header="Export" IsEnabled="{Binding IsProjectLoaded}" Command="{Binding Export}"/>
+                <MenuItem Header="Export" IsEnabled="{Binding IsProjectLoaded}" Command="{Binding ExportCommand}"/>
                 <Separator/>
-                <MenuItem Header="Save" IsEnabled="{Binding IsProjectLoaded}" Command="{Binding Save}"/>
+                <MenuItem Header="Save" IsEnabled="{Binding IsProjectLoaded}" Command="{Binding SaveCommand}"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="Exit"/>
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Characters"/>
                 <MenuItem Header="Scenes"/>
-                <MenuItem Header="Resources"/>
                 <MenuItem Header="Variables"/>
             </MenuItem>
         </Menu>
@@ -46,301 +39,48 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="250" />
             </Grid.ColumnDefinitions>
-            <TabControl Margin="5,10,0,5" TabStripPlacement="Top">
-                <TabItem Header="Characters">
-                    <DockPanel>
-                        <Button Height="30"
-                                Margin="10"
-                                Command="{Binding AddCharacterCommand}"
-                                DockPanel.Dock="Bottom">
-                            Add character
-                        </Button>
-                        <ListBox ItemsSource="{Binding Characters}"  Margin="10" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock FontSize="30" Foreground="{StaticResource Foreground}" Text="{Binding Name}"/>
-                                        <TextBlock FontSize="16" Foreground="{StaticResource Foreground}" Text="{Binding Poses.Count, StringFormat=Poses: {0}}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </DockPanel>
-                </TabItem>
-                <TabItem Header="Asset Manager">
-                    <DockPanel>
-                        <Button Width="200"
-                                Height="30"
-                                Margin="50"
-                                DockPanel.Dock="Bottom">
-                            Add rocket
-                        </Button>
-                        <ListBox Margin="50" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBoxItem>
-                                <StackPanel>
-                                    <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Rocket 1</TextBlock>
-                                    <TextBlock FontSize="16" Foreground="{StaticResource Foreground}">Status: IO</TextBlock>
-                                    <TextBlock FontSize="16" Foreground="{StaticResource Foreground}">Fire rate: 2ms</TextBlock>
-                                    <TextBlock FontSize="16" Foreground="{StaticResource Foreground}">Ammo: 455/455</TextBlock>
-                                </StackPanel>
-                            </ListBoxItem>
-                            <ListBoxItem>
-                                <StackPanel>
-                                    <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Rocket 2</TextBlock>
-                                    <TextBlock FontSize="16" Foreground="{StaticResource Foreground}">Status: Damaged</TextBlock>
-                                    <TextBlock FontSize="16" Foreground="{StaticResource Foreground}">Fire rate: 100ms</TextBlock>
-                                    <TextBlock FontSize="16" Foreground="{StaticResource Foreground}">Ammo: 50/156</TextBlock>
-                                </StackPanel>
-                            </ListBoxItem>
-                        </ListBox>
-                    </DockPanel>
-                </TabItem>
-                <TabItem Header="Scenes">
-                    <Grid Margin="50">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Margin="5"
-                                   FontSize="16"
-                                   Foreground="{StaticResource Foreground}">
-                            Receiver
-                        </TextBlock>
-                        <TextBox Grid.Column="1"
-                                 Margin="5"
-                                 FontSize="16">
-                            captain.kirk@enterprise.com
-                        </TextBox>
-                        <TextBlock Grid.Row="1"
-                                   Margin="5"
-                                   FontSize="16"
-                                   Foreground="{StaticResource Foreground}">
-                            Search for messages
-                        </TextBlock>
-                        <TextBox Grid.Row="1"
-                                 Grid.Column="1"
-                                 Margin="5"
-                                 FontSize="16"
-                                 Style="{StaticResource SearchTextBox}" />
-                        <TextBox Grid.Row="2"
-                                 Grid.ColumnSpan="2"
-                                 Margin="5"
-                                 AcceptsReturn="True"
-                                 FontSize="16"
-                                 Text="Good morning captain&#x0a;How are you?"
-                                 TextWrapping="Wrap"
-                                 VerticalScrollBarVisibility="Auto" />
-                        <StackPanel Grid.Row="3"
-                                    Grid.ColumnSpan="2"
-                                    Orientation="Horizontal">
-                            <Button Width="200"
-                                    Height="30"
-                                    Margin="5">
-                                Send
-                            </Button>
-                            <Button Width="200"
-                                    Height="30"
-                                    Margin="5">
-                                Save as draft
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Scene1.vn">
-                    <ListBox Margin="50">
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="60" Foreground="{StaticResource Foreground}">James T. Kirk</TextBlock>
-                                <TextBlock FontSize="35" Foreground="{StaticResource Foreground}">Rank: Captain</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Commanding Officer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="50" Foreground="{StaticResource Foreground}">Spock</TextBlock>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Rank: Commander</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Executive (First)</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#FFAAAA">Current action: Out for duty</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="40" Foreground="{StaticResource Foreground}">Leonard McCoy</TextBlock>
-                                <TextBlock FontSize="22" Foreground="{StaticResource Foreground}">Rank: Lt. Commander</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Chief Medical Officer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="40" Foreground="{StaticResource Foreground}">Montgomery Scott</TextBlock>
-                                <TextBlock FontSize="22" Foreground="{StaticResource Foreground}">Rank: Lt. Commander</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Chief Engineer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#FFAAAA">Current action: Out for duty</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Hikaru Sulu</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Lieutenant</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Helm Officer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Nyota Uhura</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Lieutenant</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Communications Officer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Pavel Chekov</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Ensign</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Navigator</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Christine Chapel</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Enlisted Nurse</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Nurse</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Janice Rand</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Enlisted Yeoman</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Yeoman</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                    </ListBox>
-                </TabItem>
-                <TabItem Header="Variables">
-                    <ListBox Margin="50" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Vertical" />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="60" Foreground="{StaticResource Foreground}">James T. Kirk</TextBlock>
-                                <TextBlock FontSize="35" Foreground="{StaticResource Foreground}">Rank: Captain</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Commanding Officer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="50" Foreground="{StaticResource Foreground}">Spock</TextBlock>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Rank: Commander</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Executive (First)</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#FFAAAA">Current action: Out for duty</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="40" Foreground="{StaticResource Foreground}">Leonard McCoy</TextBlock>
-                                <TextBlock FontSize="22" Foreground="{StaticResource Foreground}">Rank: Lt. Commander</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Chief Medical Officer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="40" Foreground="{StaticResource Foreground}">Montgomery Scott</TextBlock>
-                                <TextBlock FontSize="22" Foreground="{StaticResource Foreground}">Rank: Lt. Commander</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Chief Engineer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#FFAAAA">Current action: Out for duty</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Hikaru Sulu</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Lieutenant</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Helm Officer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Nyota Uhura</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Lieutenant</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Communications Officer</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Pavel Chekov</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Ensign</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Navigator</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Christine Chapel</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Enlisted Nurse</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Nurse</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem>
-                            <StackPanel>
-                                <TextBlock FontSize="30" Foreground="{StaticResource Foreground}">Janice Rand</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Rank: Enlisted Yeoman</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource Foreground}">Position: Yeoman</TextBlock>
-                                <TextBlock FontSize="18" Foreground="#AAAAAA">Current action: Sleeping</TextBlock>
-                            </StackPanel>
-                        </ListBoxItem>
-                    </ListBox>
-                </TabItem>
-            </TabControl>
+            <dragablz:TabablzControl x:Name="tabControl" ItemsSource="{Binding Things}"
+                                 Margin="4 0 4 4"
+                                 HeaderMemberPath="Header"
+                                 ShowDefaultCloseButton="True">
+                <dragablz:TabablzControl.ContentTemplate>
+                    <DataTemplate DataType="{x:Type common:TabContent}">
+                        <ContentControl Content="{Binding Content}" Margin="5" FontSize="14" />
+                    </DataTemplate>
+                </dragablz:TabablzControl.ContentTemplate>
+            </dragablz:TabablzControl>
             <StackPanel Grid.Column="1" Margin="25,25,25,0">
                 <TextBlock Margin="0,10,0,10"
                            FontSize="18"
                            Foreground="{StaticResource Foreground}"
-                           Text="Quick Access" />
+                           Text="Navigation" />
                 <Separator Background="#11FFFFFF" />
-                <Button Margin="0,10,0,3"
-                        Content="Add character"
+                <Button x:Name="CharacterTabButton"
+                        Margin="0,10,0,3"
+                        Content="Characters"
                         FontSize="14"
-                        Command="{Binding AddCharacterCommand}"
-                        Style="{StaticResource LinkButton}" />
-                <Button Margin="0,10,0,3"
-                        Content="Add scene"
+                        Style="{StaticResource LinkButton}" Click="CharacterTabButton_Click" />
+                <Button x:Name="SceneTabButton"
+                        Margin="0,10,0,3"
+                        Content="Scenes"
                         FontSize="14"
-                        Style="{StaticResource LinkButton}" />
-                <Button Margin="0,10,0,3"
-                        Content="Add variable"
+                        Style="{StaticResource LinkButton}" Click="SceneTabButton_Click" />
+                <Button x:Name="VariableTabButton"
+                        Margin="0,10,0,3"
+                        Content="Variables"
                         FontSize="14"
-                        Style="{StaticResource LinkButton}" />
-                <Separator Background="#11FFFFFF" />
+                        Style="{StaticResource LinkButton}" Click="VariableTabButton_Click" />
                 <TextBlock Margin="0,10,0,10"
                            FontSize="18"
                            Foreground="{StaticResource Foreground}"
-                           Text="Recent Scenes" />
+                           Text="Recent Content" />
                 <Separator Background="#11FFFFFF" />
                 <Button Margin="0,10,0,3"
-                        Content="notlewd.vn"
+                        Content="notlewdscene"
                         FontSize="14"
                         Style="{StaticResource LinkButton}" />
                 <Button Margin="0,3,0,3"
-                        Content="trainstation.vn"
+                        Content="basicgirl1"
                         FontSize="14"
                         Style="{StaticResource LinkButton}" />
             </StackPanel>

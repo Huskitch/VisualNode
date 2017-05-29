@@ -1,4 +1,7 @@
-﻿namespace VisualNode.Data.Nodes
+﻿using System;
+using System.Xml;
+
+namespace VisualNode.Data.Nodes
 {
     class MovementNode : Node
     {
@@ -23,5 +26,10 @@
         public MovementDirectionEnum MovementDirection { get => _movementDirection; set { _movementDirection = value; OnPropertyChanged(); } }
         public MovementTypeEnum MovementType { get => _movementType; set { _movementType = value; OnPropertyChanged(); } }
         public Pose EntrancePose { get => _entrancePose; set { _entrancePose = value; OnPropertyChanged(); } }
+
+        public override void Serialize(XmlWriter writer)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

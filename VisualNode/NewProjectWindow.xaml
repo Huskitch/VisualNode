@@ -1,0 +1,39 @@
+﻿<Controls:MetroWindow x:Class="VisualNode.NewProjectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        TitleCaps="False"
+        Title="VisualNode - New Project" MinHeight="155" MaxHeight="155" Height="155" MinWidth="485" Width="485">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/VS/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/VS/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="267*"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+        <Label HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center">Project Name:</Label>
+        <TextBox Margin="5" DockPanel.Dock="Right" Grid.Column="1" Grid.ColumnSpan="2" x:Name="projectName" TextChanged="TextBox_TextChanged" GotFocus="projectName_GotFocus" LostFocus="projectName_LostFocus">Project Name</TextBox>
+        <Label Grid.Row="1" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" VerticalAlignment="Center">Project Location:</Label>
+        <TextBox Margin="5" Grid.Row="1" Grid.Column="1" x:Name="projectPath" TextChanged="TextBox_TextChanged"/>
+        <Button Margin="5" DockPanel.Dock="Right" Grid.Column="2" Grid.Row="1" Click="Browse">Browse</Button>
+        <Button Margin="5" IsEnabled="{Binding IsValidPath}" Grid.Row="2" Click="Create">Create Project</Button>
+        <Button Margin="5" Grid.Row="2" Grid.Column="2" Click="Cancel">Cancel</Button>
+    </Grid>
+</Controls:MetroWindow>
