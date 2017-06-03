@@ -1,0 +1,31 @@
+﻿<DockPanel x:Class="VisualNode.Pages.StartPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="700" d:DesignWidth="700">
+    <Label DockPanel.Dock="Top" FontSize="30">Project Info</Label>
+    <Separator DockPanel.Dock="Top"></Separator>
+    <Grid DockPanel.Dock="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Padding="3" Text="Project Name:"/>
+        <TextBox Grid.Column="1" Text="{Binding Name}"/>
+    </Grid>
+    <TextBlock DockPanel.Dock="Top" Padding="3" Text="{Binding Characters.Count, StringFormat=Character Count: {0}}"/>
+    <TextBlock DockPanel.Dock="Top" Padding="3" Text="{Binding Scenes.Count, StringFormat=Scene Count: {0}}"/>
+    <TextBlock DockPanel.Dock="Top" Padding="3" Text="{Binding Backgrounds.Count, StringFormat=Background Count: {0}}"/>
+    <TextBlock DockPanel.Dock="Top" Padding="3" Text="{Binding Variables.Count, StringFormat=Variable Count: {0}}"/>
+    <Label DockPanel.Dock="Top" FontSize="30">Warnings</Label>
+    <Separator DockPanel.Dock="Top"></Separator>
+    <TextBlock DockPanel.Dock="Top" Padding="3" Text="Everything seems to be ok!"/>
+    <Label DockPanel.Dock="Top" FontSize="30">Errors</Label>
+    <Separator DockPanel.Dock="Top"></Separator>
+    <TextBlock DockPanel.Dock="Top" Padding="3" Text="Everything seems to be ok!"/>
+</DockPanel>

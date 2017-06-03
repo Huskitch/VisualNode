@@ -1,15 +1,13 @@
 ﻿using MahApps.Metro.Controls;
-using System.Windows.Controls;
 
 namespace VisualNode
 {
     /// <summary>
-    /// Interakční logika pro StartPage.xaml
+    /// Interakční logika pro WelcomeWindow.xaml
     /// </summary>
-    public partial class StartPage : DockPanel
+    public partial class WelcomeWindow : MetroWindow
     {
-
-        public StartPage()
+        public WelcomeWindow()
         {
             InitializeComponent();
         }

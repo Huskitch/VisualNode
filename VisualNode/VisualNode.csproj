@@ -42,6 +42,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.1.5.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -64,32 +66,47 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CharacterDetailPage.xaml.cs">
+    <Compile Include="Pages\BackgroundDetailPage.xaml.cs">
+      <DependentUpon>BackgroundDetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NodeDetailPage.xaml.cs">
+      <DependentUpon>NodeDetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\NodeViewModel.cs" />
+    <Compile Include="Pages\VariableDetailPage.xaml.cs">
+      <DependentUpon>VariableDetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\SceneDetailPage.xaml.cs">
+      <DependentUpon>SceneDetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\PoseDetailPage.xaml.cs">
+      <DependentUpon>PoseDetailPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\CharacterDetailPage.xaml.cs">
       <DependentUpon>CharacterDetailPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\TabContent.cs" />
-    <Compile Include="VariablePage.xaml.cs">
+    <Compile Include="Pages\BackgroundPage.xaml.cs">
+      <DependentUpon>BackgroundPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\VariablePage.xaml.cs">
       <DependentUpon>VariablePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StartPage.xaml.cs">
+    <Compile Include="Pages\StartPage.xaml.cs">
       <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ScenePage.xaml.cs">
+    <Compile Include="Pages\ScenePage.xaml.cs">
       <DependentUpon>ScenePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Data\Background.cs" />
     <Compile Include="Data\Character.cs" />
     <Compile Include="Data\Image.cs" />
-    <Compile Include="Data\Nodes\ChangeBackgroundNode.cs" />
-    <Compile Include="Data\Nodes\ChangeSceneNode.cs" />
-    <Compile Include="Data\Nodes\DialogueNode.cs" />
-    <Compile Include="Data\Nodes\MovementNode.cs" />
-    <Compile Include="Data\Nodes\Node.cs" />
+    <Compile Include="Data\Node.cs" />
     <Compile Include="Data\Variable.cs" />
     <Compile Include="NewProjectWindow.xaml.cs">
       <DependentUpon>NewProjectWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CharacterPage.xaml.cs">
+    <Compile Include="Pages\CharacterPage.xaml.cs">
       <DependentUpon>CharacterPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\NotifiableClass.cs" />
@@ -97,19 +114,47 @@
     <Compile Include="Util\RelayCommand.cs" />
     <Compile Include="Data\Scene.cs" />
     <Compile Include="Data\VisualNovel.cs" />
-    <Page Include="CharacterDetailPage.xaml">
+    <Compile Include="ViewModels\SceneDetailViewModel.cs" />
+    <Compile Include="WelcomeWindow.xaml.cs">
+      <DependentUpon>WelcomeWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Pages\BackgroundDetailPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="VariablePage.xaml">
+    <Page Include="Pages\NodeDetailPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="StartPage.xaml">
+    <Page Include="Pages\VariableDetailPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="ScenePage.xaml">
+    <Page Include="Pages\SceneDetailPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\PoseDetailPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\CharacterDetailPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\BackgroundPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\VariablePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\StartPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\ScenePage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -129,7 +174,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CharacterPage.xaml">
+    <Page Include="Pages\CharacterPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WelcomeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

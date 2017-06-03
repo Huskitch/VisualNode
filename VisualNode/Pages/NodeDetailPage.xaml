@@ -1,0 +1,123 @@
+﻿<DockPanel x:Class="VisualNode.Pages.NodeDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      Margin="5"
+      d:DesignHeight="900" d:DesignWidth="400">
+    <Grid DockPanel.Dock="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label FontSize="20"  Content="General" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label FontSize="12"  Content="Node type:" Grid.Row="1"/>
+        <ComboBox x:Name="TypeComboBox" SelectedItem="{Binding NodeType}" SelectedIndex="0" Margin="2" FontSize="12"  Grid.Column="1" Grid.Row="1"/>
+        <Label FontSize="12"  Content="Note:" Grid.Row="2"/>
+        <TextBox Margin="2" FontSize="12"  Text="{Binding Note}" Grid.Column="1" Grid.Row="2"/>
+        <Label FontSize="12"  Content="Wait for input:" Grid.Row="3"/>
+        <CheckBox Margin="2,0,0,0" IsChecked="{Binding WaitForInput}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+    </Grid>
+    <Grid DockPanel.Dock="Top" IsEnabled="{Binding HasSceneTab}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label FontSize="20"  Content="Scene" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label FontSize="12"  Content="Scene:" Grid.Row="1"/>
+        <ComboBox x:Name="SceneComboBox" SelectedIndex="0" SelectedItem="{Binding Scene}" Margin="2" FontSize="12"  Grid.Column="1" Grid.Row="1">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </Grid>
+    <Grid DockPanel.Dock="Top" IsEnabled="{Binding HasBackgroundTab}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label FontSize="20"  Content="Background" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label FontSize="12"  Content="Background:" Grid.Row="1"/>
+        <ComboBox x:Name="BackgroundComboBox" SelectedItem="{Binding Background}" SelectedIndex="0" Margin="2" FontSize="12"  Grid.Column="1" Grid.Row="1">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </Grid>
+    <Grid DockPanel.Dock="Top" IsEnabled="{Binding HasMovementTab}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label FontSize="20"  Content="Movement" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label FontSize="12"  Content="Type:" Grid.Row="1"/>
+        <ComboBox x:Name="MovementTypeComboBox" SelectedItem="{Binding MovementType}" SelectedIndex="0" Margin="2" FontSize="12"  Grid.Column="1" Grid.Row="1"/>
+        <Label FontSize="12"  Content="Direction:" Grid.Row="2"/>
+        <ComboBox x:Name="MovementDirectionComboBox" SelectedItem="{Binding MovementDirection}" SelectedIndex="0" Margin="2" FontSize="12"  Grid.Column="1" Grid.Row="2"/>
+    </Grid>
+    <Grid DockPanel.Dock="Top" IsEnabled="{Binding HasCharacterTab}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label FontSize="20"  Content="Character" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label FontSize="12"  Content="Character:" Grid.Row="1"/>
+        <ComboBox x:Name="CharacterComboBox" SelectedItem="{Binding Character}" SelectedIndex="0" Margin="2" FontSize="12"  Grid.Column="1" SelectionChanged="CharacterComboBox_SelectionChanged" Grid.Row="1">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Label FontSize="12"  Content="Pose:" Grid.Row="2"/>
+        <ComboBox x:Name="PoseComboBox" SelectedItem="{Binding Pose}" ItemsSource="{Binding Character.Poses}" SelectedIndex="0" Margin="2" FontSize="12"  Grid.Column="1" Grid.Row="2">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </Grid>
+    <Grid DockPanel.Dock="Top" IsEnabled="{Binding HasDialogueTab}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label FontSize="20" Content="Dialogue" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Label FontSize="12" Content="Line:" Grid.Row="1"/>
+        <TextBox Margin="2" FontSize="12" Text="{Binding DialogueText}" Grid.Column="1" Grid.Row="1"/>
+    </Grid>
+</DockPanel>

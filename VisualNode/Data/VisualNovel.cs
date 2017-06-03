@@ -1,42 +1,32 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Runtime.Serialization;
 using System.Windows.Input;
 using System.Xml;
 using VisualNode.Util;
 
 namespace VisualNode.Data
 {
+    [DataContract(IsReference = true)]
     public class VisualNovel : NotifiableClass
     {
-        public string Path
-        {
-            get
-            {
-                return _path;
-            }
-            set
-            {
-                _path = value;
-                OnPropertyChanged();
-            }
-        }
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
-            set
-            {
-                _name = value;
-                OnPropertyChanged();
-            }
-        }
+        public string Path { get => _path; set { _path = value; OnPropertyChanged(); } }
 
+        [DataMember]
+        public string Name { get => _name; set { _name = value; OnPropertyChanged(); } }
+
+        // TODO: Missing remove options
+        [DataMember]
         public ObservableCollection<Character> Characters { get; set; } = new ObservableCollection<Character>();
+
+        [DataMember]
         public ObservableCollection<Scene> Scenes { get; set; } = new ObservableCollection<Scene>();
+
+        [DataMember]
         public ObservableCollection<Variable> Variables { get; set; } = new ObservableCollection<Variable>();
+
+        [DataMember]
+        public ObservableCollection<Background> Backgrounds { get; set; } = new ObservableCollection<Background>();
 
         private string _path;
         private string _name = "New Project";
@@ -77,61 +67,17 @@ namespace VisualNode.Data
 
         private void Save()
         {
+            DataContractSerializer serializer = new DataContractSerializer(typeof(VisualNovel));
+
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings()
             {
                 Indent = true,
-                IndentChars = "\t",
-                NewLineOnAttributes = true
+                IndentChars = "\t"
             };
 
-            using (XmlWriter writer = XmlWriter.Create(System.IO.Path.Combine(Path, "novel.vn"), xmlWriterSettings))
+            using (var w = XmlWriter.Create(System.IO.Path.Combine(Path, "novel.vn"), xmlWriterSettings))
             {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("Novel");
-                writer.WriteAttributeString("name", Name);
-
-                writer.WriteStartElement("Characters");
-
-                for (int i = 0; i < Characters.Count; i++)
-                {
-                    writer.WriteStartElement("Character");
-                    writer.WriteAttributeString("id", i.ToString());
-                    writer.WriteAttributeString("name", Characters[i]?.Name);
-
-                    writer.WriteStartElement("Poses");
-                    for (int j = 0; j < Characters[i].Poses.Count; j++)
-                    {
-                        writer.WriteStartElement("Pose");
-                        writer.WriteAttributeString("id", j.ToString());
-                        writer.WriteAttributeString("name", Characters[i].Poses[j].Name);
-                        writer.WriteString(Characters[i].Poses[j].Image?.Path ?? "");
-                        writer.WriteEndElement();
-                    };
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-                }
-
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("Scenes");
-                for (int i = 0; i < Scenes.Count; i++)
-                {
-                    writer.WriteStartElement("Scene");
-                    writer.WriteAttributeString("id", i.ToString());
-                    writer.WriteAttributeString("name", Scenes[i]?.Name);
-
-                    writer.WriteStartElement("Nodes");
-                    for (int j = 0; j < Scenes[i]?.Nodes?.Count; j++)
-                    {
-                        Scenes[i]?.Nodes[j]?.Serialize(writer);
-                    };
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
-                writer.WriteEndElement();
-
-                writer.WriteEndDocument();
+                serializer.WriteObject(w, this);
             }
         }
 
@@ -151,6 +97,43 @@ namespace VisualNode.Data
 
         private void Export()
         {
+            Save();
+
+            string exportDir = System.IO.Path.Combine(Path, "export");
+            string contentDir = System.IO.Path.Combine(Path, "export", "content");
+
+            // TODO: FEEL MORE SECURE ABOUT THIS LINE
+            //Directory.Delete(exportDir, true);
+
+            Directory.CreateDirectory(exportDir);
+            Directory.CreateDirectory(contentDir);
+
+            Directory.CreateDirectory(System.IO.Path.Combine(contentDir, "backgrounds"));
+            foreach (var background in Backgrounds)
+            {
+                if (string.IsNullOrEmpty(background.Image.Path)) continue;
+
+                string extension = System.IO.Path.GetExtension(background.Image.Path);
+                File.Copy(background.Image.Path, System.IO.Path.Combine(contentDir, "backgrounds", background.Name + extension));
+            }
+
+            Directory.CreateDirectory(System.IO.Path.Combine(contentDir, "characters"));
+            foreach (var character in Characters)
+            {
+                string charDir = System.IO.Path.Combine(contentDir, "characters", character.Name);
+                Directory.CreateDirectory(charDir);
+
+                foreach (var pose in character.Poses)
+                {
+                    if (string.IsNullOrEmpty(pose.Image.Path)) continue;
+
+                    string extension = System.IO.Path.GetExtension(pose.Image.Path);
+                    File.Copy(pose.Image.Path, System.IO.Path.Combine(charDir, pose.Name + extension));
+                }
+            }
+
+            string vnfile = System.IO.Path.Combine(Path, "novel.vn");
+            File.Copy(vnfile, System.IO.Path.Combine(exportDir, "novel.vn"));
         }
 
         private ICommand _addSceneCommand;
@@ -191,12 +174,38 @@ namespace VisualNode.Data
             Variables.Add(new Variable());
         }
 
+        private ICommand _addBackgroundCommand;
+
+        public ICommand AddBackgroundCommand
+        {
+            get
+            {
+                if (_addBackgroundCommand == null)
+                {
+                    _addBackgroundCommand = new RelayCommand(param => AddBackground());
+                }
+                return _addBackgroundCommand;
+            }
+        }
+
+        private void AddBackground()
+        {
+            Backgrounds.Add(new Background());
+        }
+
         public static VisualNovel LoadFromFile(string path)
         {
-            return new VisualNovel()
+            DataContractSerializer serializer = new DataContractSerializer(typeof(VisualNovel));
+            VisualNovel novel;
+
+            using (FileStream stream = File.OpenRead(path))
             {
-                Path = System.IO.Path.GetDirectoryName(path)
-            };
+                novel = serializer.ReadObject(stream) as VisualNovel;
+            }
+
+            novel.Path = System.IO.Path.GetDirectoryName(path);
+
+            return novel;
         }
     }
 }

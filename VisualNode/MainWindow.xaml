@@ -15,6 +15,14 @@
         </PriorityBinding>
     </Window.Title>
 
+    <Controls:MetroWindow.Flyouts>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="Flyout1" Header="{Binding FlyoutContent.Content.Header}" Content="{Binding FlyoutContent.Content}" Position="Right" Width="400"/>
+        </Controls:FlyoutsControl>
+    </Controls:MetroWindow.Flyouts>
+
+
+
     <DockPanel>
         <Menu Margin="2,0,0,0"
               DockPanel.Dock="Top"
@@ -39,9 +47,9 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="250" />
             </Grid.ColumnDefinitions>
-            <dragablz:TabablzControl x:Name="tabControl" ItemsSource="{Binding Things}"
-                                 Margin="4 0 4 4"
-                                 HeaderMemberPath="Header"
+            <dragablz:TabablzControl x:Name="tabControl" ItemsSource="{Binding Tabs}"
+                                 Margin="5"
+                                 HeaderMemberPath="Content.Header"
                                  ShowDefaultCloseButton="True">
                 <dragablz:TabablzControl.ContentTemplate>
                     <DataTemplate DataType="{x:Type common:TabContent}">
@@ -70,19 +78,11 @@
                         Content="Variables"
                         FontSize="14"
                         Style="{StaticResource LinkButton}" Click="VariableTabButton_Click" />
-                <TextBlock Margin="0,10,0,10"
-                           FontSize="18"
-                           Foreground="{StaticResource Foreground}"
-                           Text="Recent Content" />
-                <Separator Background="#11FFFFFF" />
-                <Button Margin="0,10,0,3"
-                        Content="notlewdscene"
+                <Button x:Name="BackgroundTabButton"
+                        Margin="0,10,0,3"
+                        Content="Backgrounds"
                         FontSize="14"
-                        Style="{StaticResource LinkButton}" />
-                <Button Margin="0,3,0,3"
-                        Content="basicgirl1"
-                        FontSize="14"
-                        Style="{StaticResource LinkButton}" />
+                        Style="{StaticResource LinkButton}" Click="BackgroundTabButton_Click" />
             </StackPanel>
         </Grid>
     </DockPanel>

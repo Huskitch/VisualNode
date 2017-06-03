@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using VisualNode.Util;
 
 namespace VisualNode.Data
@@ -10,14 +11,23 @@ namespace VisualNode.Data
         public string Name { get { return _name; } set { _name = value; OnPropertyChanged(); } }
         public ObservableCollection<Pose> Poses { get; set; } = new ObservableCollection<Pose>();
 
-        public Character()
-        {
-            Poses.CollectionChanged += (sender, e) => OnPropertyChanged("Poses");
+        private ICommand _addPoseCommand;
 
-            for (int i = 0; i < 4; i++)
+        public ICommand AddPoseCommand
+        {
+            get
             {
-                Poses.Add(new Pose());
+                if (_addPoseCommand == null)
+                {
+                    _addPoseCommand = new RelayCommand(param => AddPose());
+                }
+                return _addPoseCommand;
             }
+        }
+
+        private void AddPose()
+        {
+            Poses.Add(new Pose());
         }
     }
 }

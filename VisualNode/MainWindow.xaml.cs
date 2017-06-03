@@ -7,8 +7,9 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using System;
 using MahApps.Metro.Controls.Dialogs;
-using System.Threading.Tasks;
 using VisualNode.Util;
+using VisualNode.Pages;
+using System.Linq;
 
 namespace VisualNode
 {
@@ -28,27 +29,32 @@ namespace VisualNode
             }
         }
 
-        public ObservableCollection<TabContent> Things { get; set; } = new ObservableCollection<TabContent>();
+        public ObservableCollection<TabContent> Tabs { get; set; } = new ObservableCollection<TabContent>();
+
+        // TODO: Maybe make it slide in before changing content
+        public TabContent FlyoutContent { get => _flyoutContent; set { _flyoutContent = value; OnPropertyChanged(); } }
+        private TabContent _flyoutContent;
 
         public MainWindow()
         {
             InitializeComponent();
 
             tabControl.DataContext = this;
+            Flyout1.DataContext = this;
             DataContext = CurrentProject;
 
-            Things.CollectionChanged += (sender, e) =>
+            Tabs.CollectionChanged += (sender, e) =>
             {
-                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add || Things.Count > 0) return;
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add || Tabs.Count > 0) return;
 
                 Dispatcher.BeginInvoke(new Action<MainWindow>((thing) => {
-                    Things.Add(new TabContent("Start", new StartPage()));
+                    Tabs.Add(new TabContent(new StartPage() { DataContext = CurrentProject }));
                     tabControl.SelectedIndex = 0;
                 }),
                 this);
             };
 
-            Things.Add(new TabContent("Start", new StartPage()));
+            Tabs.Add(new TabContent(new StartPage() { DataContext = CurrentProject }));
             tabControl.SelectedIndex = 0;
 
             string[] args = Environment.GetCommandLineArgs();
@@ -56,7 +62,7 @@ namespace VisualNode
             {
                 CurrentProject = VisualNovel.LoadFromFile(args[1]);
                 DataContext = CurrentProject;
-                foreach (var tab in Things)
+                foreach (var tab in Tabs)
                 {
                     (tab.Content as DockPanel).DataContext = CurrentProject;
                 }
@@ -74,13 +80,13 @@ namespace VisualNode
             NewProjectWindow window = new NewProjectWindow();
             window.ShowDialog();
 
-            CurrentProject = window.CurrentProject;
+            if (window.CurrentProject != null) CurrentProject = window.CurrentProject;
             if (CurrentProject == null) return;
 
             DataContext = CurrentProject;
-            foreach (var tab in Things)
+            foreach (var tab in Tabs)
             {
-                (tab.Content as Control).DataContext = CurrentProject;
+                (tab.Content as DockPanel).DataContext = CurrentProject;
             }
         }
 
@@ -95,9 +101,9 @@ namespace VisualNode
             {
                 CurrentProject = VisualNovel.LoadFromFile(openFileDialog.FileName);
                 DataContext = CurrentProject;
-                foreach (var tab in Things)
+                foreach (var tab in Tabs)
                 {
-                    (tab.Content as Control).DataContext = CurrentProject;
+                    (tab.Content as DockPanel).DataContext = CurrentProject;
                 }
             }
         }
@@ -115,7 +121,13 @@ namespace VisualNode
                 return;
             }
 
-            Things.Add(new TabContent("Characters", new CharacterPage(this) { DataContext = CurrentProject }));
+            TabContent page = Tabs.FirstOrDefault(x => x.Content.GetType() == typeof(CharacterPage));
+            if (page != null) tabControl.SelectedItem = page;
+            else
+            {
+                Tabs.Add(new TabContent(new CharacterPage(this) { DataContext = CurrentProject }));
+                tabControl.SelectedIndex = Tabs.Count - 1;
+            }
         }
 
         private async void SceneTabButton_Click(object sender, RoutedEventArgs e)
@@ -126,7 +138,13 @@ namespace VisualNode
                 return;
             }
 
-            Things.Add(new TabContent("Scenes", new ScenePage() { DataContext = CurrentProject }));
+            TabContent page = Tabs.FirstOrDefault(x => x.Content.GetType() == typeof(ScenePage));
+            if (page != null) tabControl.SelectedItem = page;
+            else
+            {
+                Tabs.Add(new TabContent(new ScenePage(this) { DataContext = CurrentProject }));
+                tabControl.SelectedIndex = Tabs.Count - 1;
+            }
         }
 
         private async void VariableTabButton_Click(object sender, RoutedEventArgs e)
@@ -137,7 +155,30 @@ namespace VisualNode
                 return;
             }
 
-            Things.Add(new TabContent("Variables", new VariablePage() { DataContext = CurrentProject }));
+            TabContent page = Tabs.FirstOrDefault(x => x.Content.GetType() == typeof(VariablePage));
+            if (page != null) tabControl.SelectedItem = page;
+            else
+            {
+                Tabs.Add(new TabContent(new VariablePage(this) { DataContext = CurrentProject }));
+                tabControl.SelectedIndex = Tabs.Count - 1;
+            }
+        }
+
+        private async void BackgroundTabButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CurrentProject == null)
+            {
+                await this.ShowMessageAsync("Error", "You need to open a project first");
+                return;
+            }
+
+            TabContent page = Tabs.FirstOrDefault(x => x.Content.GetType() == typeof(BackgroundPage));
+            if (page != null) tabControl.SelectedItem = page;
+            else
+            {
+                Tabs.Add(new TabContent(new BackgroundPage(this) { DataContext = CurrentProject }));
+                tabControl.SelectedIndex = Tabs.Count - 1;
+            }
         }
     }
 }

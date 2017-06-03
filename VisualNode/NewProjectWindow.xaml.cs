@@ -55,6 +55,7 @@ namespace VisualNode
             };
 
             Directory.CreateDirectory(Path.Combine(projectPath.Text, projectName.Text));
+            Directory.CreateDirectory(Path.Combine(projectPath.Text, projectName.Text, "export"));
             File.Create(Path.Combine(projectPath.Text, projectName.Text, "novel.vn"));
 
             Close();

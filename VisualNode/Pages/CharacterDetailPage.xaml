@@ -1,0 +1,40 @@
+﻿<DockPanel x:Class="VisualNode.Pages.CharacterDetailPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="210*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label FontSize="12" Foreground="{StaticResource Foreground}" Content="Character name:"/>
+        <TextBox FontSize="12" Foreground="{StaticResource Foreground}" Text="{Binding Name}" Grid.Column="1"/>
+        <Label FontSize="12" Foreground="{StaticResource Foreground}" Content="Poses:" Grid.Row="1"/>
+        <Label FontSize="12" Foreground="{StaticResource Foreground}" Content="{Binding Poses.Count}" Grid.Row="1" Grid.Column="1"/>
+        <ListBox x:Name="PoseListBox" ItemsSource="{Binding Poses}" Margin="5" Grid.Row="2" Grid.ColumnSpan="2">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel MouseLeftButtonDown="OpenPoseTab">
+                        <StackPanel.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Click="RemovePose" Foreground="White" Header="Remove"/>
+                            </ContextMenu>
+                        </StackPanel.ContextMenu>
+                        <TextBlock FontSize="30" Foreground="{StaticResource Foreground}" Text="{Binding Name}"/>
+                        <TextBlock FontSize="16" Foreground="{StaticResource Foreground}" Text="{Binding Image.Path, StringFormat=Path: {0}}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Command="{Binding AddPoseCommand}" Margin="5 0" Content="Add Pose" Grid.Row="3" Grid.ColumnSpan="2"/>
+    </Grid>
+</DockPanel>
